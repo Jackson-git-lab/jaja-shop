@@ -1,0 +1,11 @@
+
+# Secrets et configuration locale : ne jamais versionner
+.env
+*.env
+
+# Fichiers envoyés par les utilisateurs en développement
+uploads/
+
+# Système
+.DS_Store
+Thumbs.db

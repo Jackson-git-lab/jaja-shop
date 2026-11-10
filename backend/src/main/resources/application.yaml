@@ -1,6 +1,8 @@
 spring:
   application:
     name: jaja-shop-api
+  profiles:
+    default: dev
 
 server:
   port: 8081
