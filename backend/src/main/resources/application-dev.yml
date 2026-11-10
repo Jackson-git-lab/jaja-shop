@@ -1,0 +1,12 @@
+spring:
+  config:
+    # Chargeons le fichier .env de la racine du dépôt 
+    import: optional:file:../.env[.properties]
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:jajashop}
+    username: ${DB_USER:jajashop}
+    password: ${DB_PASSWORD}
+
+logging:
+  level:
+    Jaja.Shop.API: DEBUG
