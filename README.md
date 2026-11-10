@@ -78,3 +78,17 @@ PostgreSQL doit être démarré.
 cd backend
 ./mvnw test
 ```
+
+## Migrations de base de données (Flyway)
+
+Le schéma de la base est géré uniquement par des scripts SQL versionnés, dans
+`backend/src/main/resources/db/migration/`. Flyway les applique au démarrage de l'application.
+
+- Nommage : `V<numéro>__<description>.sql` (deux underscores), par exemple `V2__create_users.sql`
+- Une migration déjà appliquée ne se modifie jamais : pour corriger, on ajoute une nouvelle migration
+- Hibernate est configuré en `ddl-auto: validate` : il vérifie que les entités correspondent
+  au schéma, mais ne le crée ni ne le modifie
+- Historique des migrations appliquées : table `flyway_schema_history`
+
+L'application a besoin que PostgreSQL soit démarré (`docker compose up -d`) : Flyway se
+connecte à la base dès le démarrage, y compris en profil `prod`.
