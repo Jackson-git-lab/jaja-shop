@@ -92,3 +92,36 @@ Le schéma de la base est géré uniquement par des scripts SQL versionnés, dan
 
 L'application a besoin que PostgreSQL soit démarré (`docker compose up -d`) : Flyway se
 connecte à la base dès le démarrage, y compris en profil `prod`.
+
+
+## Format des erreurs de l'API
+
+Toutes les erreurs ont la même forme JSON, produite par `GlobalExceptionHandler`
+(`@RestControllerAdvice`) :
+
+```json
+{
+  "code": "RESOURCE_NOT_FOUND",
+  "message": "Produit introuvable (identifiant : 42).",
+  "details": [],
+  "timestamp": "2026-11-11T10:15:30.123Z"
+}
+```
+
+| Statut | Code | Cas |
+|---|---|---|
+| 400 | VALIDATION_ERROR | champs invalides (`details` : une ligne par champ) |
+| 400 | MALFORMED_REQUEST | JSON illisible |
+| 400 | INVALID_PARAMETER | paramètre d'URL invalide ou manquant |
+| 400 | BAD_REQUEST | demande invalide pour une raison métier |
+| 401 | UNAUTHORIZED | non authentifié ou identifiants invalides |
+| 403 | FORBIDDEN | connecté mais non autorisé |
+| 404 | RESOURCE_NOT_FOUND / ROUTE_NOT_FOUND | ressource ou route inexistante |
+| 405 | METHOD_NOT_ALLOWED | mauvaise méthode HTTP |
+| 409 | CONFLICT | conflit avec l'état actuel (doublon, stock insuffisant) |
+| 415 | UNSUPPORTED_MEDIA_TYPE | type de contenu non supporté |
+| 500 | INTERNAL_ERROR | erreur inattendue (aucun détail technique renvoyé) |
+
+Dans le code, on lance une exception métier (`ResourceNotFoundException`,
+`ConflictException`, `UnauthorizedException`, `ForbiddenException`, `BadRequestException`)
+et le handler global s'occupe de la réponse.
