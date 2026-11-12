@@ -5,3 +5,10 @@ spring:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/jajashop_test
     username: ${DB_USER:jajashop}
     password: ${DB_PASSWORD}
+
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true

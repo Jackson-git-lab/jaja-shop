@@ -8,3 +8,10 @@ logging:
   level:
     root: WARN
     Jaja.Shop.API: INFO
+
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false

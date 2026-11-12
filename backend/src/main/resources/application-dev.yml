@@ -10,3 +10,11 @@ spring:
 logging:
   level:
     Jaja.Shop.API: DEBUG
+
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    persist-authorization: true
