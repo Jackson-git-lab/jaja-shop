@@ -125,3 +125,21 @@ Toutes les erreurs ont la même forme JSON, produite par `GlobalExceptionHandler
 Dans le code, on lance une exception métier (`ResourceNotFoundException`,
 `ConflictException`, `UnauthorizedException`, `ForbiddenException`, `BadRequestException`)
 et le handler global s'occupe de la réponse.
+
+
+## Documentation de l'API (Swagger / OpenAPI)
+
+La documentation est générée automatiquement à partir du code (springdoc-openapi).
+Elle est **active en dev et en test, désactivée en prod**.
+
+| Ressource | URL (dev) |
+|---|---|
+| Interface Swagger UI | http://localhost:8081/swagger-ui.html |
+| Spécification OpenAPI (JSON) | http://localhost:8081/v3/api-docs |
+
+Authentification : le schéma `bearerAuth` (HTTP Bearer, JWT) est déclaré dans `OpenApiConfig`.
+Les contrôleurs protégés l'activent avec `@SecurityRequirement(name = OpenApiConfig.BEARER_AUTH)`.
+Dans Swagger UI, bouton **Authorize**, puis coller le token JWT (sans le mot `Bearer`).
+
+Chaque ticket qui ajoute une route doit la documenter (`@Tag` sur le contrôleur,
+`@Operation` sur chaque méthode).
