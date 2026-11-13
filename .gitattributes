@@ -1,0 +1,6 @@
+# Le wrapper Maven doit avoir des fins de ligne Linux (LF), même sous Windows
+/backend/mvnw text eol=lf
+*.sh text eol=lf
+
+# Le script Windows garde des fins de ligne Windows (CRLF)
+*.cmd text eol=crlf

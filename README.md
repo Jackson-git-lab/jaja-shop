@@ -1,5 +1,7 @@
 # Jaja Shop
 
+[![Backend CI](https://github.com/Jackson-git-lab/jaja-shop/actions/workflows/backend-ci.yml/badge.svg?branch=main)](https://github.com/Jackson-git-lab/jaja-shop/actions/workflows/backend-ci.yml)
+
 Boutique en ligne avec tableau de bord administrateur. Paiement par Wave (XOF).
 Projet de démonstration : API Spring Boot, puis frontend React.
 
@@ -143,3 +145,25 @@ Dans Swagger UI, bouton **Authorize**, puis coller le token JWT (sans le mot `Be
 
 Chaque ticket qui ajoute une route doit la documenter (`@Tag` sur le contrôleur,
 `@Operation` sur chaque méthode).
+
+
+
+## Intégration continue (CI)
+
+À chaque push, GitHub Actions (`.github/workflows/backend-ci.yml`) :
+
+1. récupère le code ;
+2. installe Java 21 (avec cache Maven) ;
+3. démarre un PostgreSQL temporaire (base `jajashop_test`) ;
+4. lance `./mvnw verify` : compilation, tests, construction du jar.
+
+En cas d'échec, les rapports de tests sont conservés comme artefact téléchargeable.
+Le badge en haut de ce fichier indique l'état de la branche `main`.
+
+Reproduire la CI en local :
+
+```bash
+docker compose up -d
+cd backend
+./mvnw -B -ntp verify
+```
