@@ -167,3 +167,17 @@ docker compose up -d
 cd backend
 ./mvnw -B -ntp verify
 ```
+
+## Inscription (`POST /api/auth/register`)
+
+Crée un compte avec le rôle **CLIENT** (le rôle ne peut pas être choisi par le client).
+
+| Champ | Règle |
+|---|---|
+| firstName, lastName | obligatoires, 100 caractères maximum |
+| email | obligatoire, valide, unique (insensible à la casse) |
+| phone | obligatoire, 8 à 20 chiffres (le `+` et les espaces sont autorisés) |
+| password | 8 à 64 caractères, au moins une lettre et un chiffre |
+
+Le mot de passe est haché avec BCrypt et n'apparaît jamais dans les réponses ni dans les logs.
+Réponses : `201` compte créé, `400` données invalides, `409` e-mail déjà utilisé.
