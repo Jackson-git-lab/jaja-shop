@@ -26,7 +26,8 @@ public class OpenApiConfig {
                         .title("Jaja Shop API")
                         .version("0.1.0")
                         .description("API de la boutique en ligne Jaja Shop : catalogue, panier, "
-                                + "commandes, paiement Wave et administration."))
+                                + "commandes, paiement Wave et administration. "
+                                + "Les routes protégées demandent un token JWT (bouton Authorize)."))
                 .components(new Components()
                         .addSecuritySchemes(BEARER_AUTH, new SecurityScheme()
                                 .type(SecurityScheme.Type.HTTP)
