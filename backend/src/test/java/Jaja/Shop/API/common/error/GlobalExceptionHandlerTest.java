@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 
 /*
    on vérifie que chaque type d'erreur produit le bon statut HTTP et le format ApiError.
@@ -112,6 +114,22 @@ class GlobalExceptionHandlerTest {
                 .andExpect(jsonPath("$.details").isEmpty());
     }
 
+    @Test
+    void accesRefuseParSpringSecurityRepond403() throws Exception {
+        mockMvc.perform(get("/test/access-denied"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.code").value("FORBIDDEN"))
+                .andExpect(jsonPath("$.message").value("Accès refusé : droits insuffisants."));
+    }
+
+    @Test
+    void erreurDAuthentificationSpringSecurityRepond401() throws Exception {
+        mockMvc.perform(get("/test/auth-error"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value("UNAUTHORIZED"))
+                .andExpect(jsonPath("$.message").value("Authentification requise."));
+    }
+
     /* Faux contrôleur, utilisé uniquement dans ce test. */
     @RestController
     @RequestMapping("/test")
@@ -150,6 +168,15 @@ class GlobalExceptionHandlerTest {
         @GetMapping("/boom")
         public String boom() {
             throw new IllegalStateException("secret interne : ne doit jamais sortir");
+        }
+        @GetMapping("/access-denied")
+        public String accessDenied() {
+            throw new AccessDeniedException("secret interne");
+        }
+
+        @GetMapping("/auth-error")
+        public String authError() {
+            throw new BadCredentialsException("secret interne");
         }
     }
 
