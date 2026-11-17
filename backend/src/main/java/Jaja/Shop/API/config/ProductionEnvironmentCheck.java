@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 public class ProductionEnvironmentCheck {
 
     private static final List<String> REQUIRED_VARIABLES =
-        List.of("DB_HOST", "DB_PORT", "DB_NAME", "DB_USER", "DB_PASSWORD", "JWT_SECRET");
+        List.of("DB_HOST", "DB_PORT", "DB_NAME", "DB_USER", "DB_PASSWORD", "JWT_SECRET", "CORS_ALLOWED_ORIGINS");
 
     public ProductionEnvironmentCheck(Environment environment) {
         List<String> missing = REQUIRED_VARIABLES.stream()

@@ -37,7 +37,8 @@ class ProductionEnvironmentCheckTest {
                 .withProperty("DB_NAME", "jajashop")
                 .withProperty("DB_USER", "jajashop")
                 .withProperty("DB_PASSWORD", "secret")
-                .withProperty("JWT_SECRET", "x".repeat(40));
+                .withProperty("JWT_SECRET", "x".repeat(40))
+                .withProperty("CORS_ALLOWED_ORIGINS", "https://jajashop.example");
 
         assertDoesNotThrow(() -> new ProductionEnvironmentCheck(environment));
     }
