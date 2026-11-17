@@ -36,7 +36,8 @@ class ProductionEnvironmentCheckTest {
                 .withProperty("DB_PORT", "5432")
                 .withProperty("DB_NAME", "jajashop")
                 .withProperty("DB_USER", "jajashop")
-                .withProperty("DB_PASSWORD", "secret");
+                .withProperty("DB_PASSWORD", "secret")
+                .withProperty("JWT_SECRET", "x".repeat(40));
 
         assertDoesNotThrow(() -> new ProductionEnvironmentCheck(environment));
     }

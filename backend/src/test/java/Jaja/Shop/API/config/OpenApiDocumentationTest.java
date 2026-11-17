@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-/**
+/*
   on vérifie que la spécification OpenAPI est générée, qu'elle contient nos routes
   et que le schéma d'authentification JWT est déclaré.
  */
@@ -55,5 +55,13 @@ class OpenApiDocumentationTest {
                 .andExpect(jsonPath("$.paths['/api/auth/register'].post").exists())
                 .andExpect(jsonPath("$.paths['/api/auth/register'].post.responses['201']").exists())
                 .andExpect(jsonPath("$.paths['/api/auth/register'].post.responses['409']").exists());
+    }
+    @Test
+    void laRouteDeConnexionEstDocumentee() throws Exception {
+        mockMvc.perform(get("/v3/api-docs"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.paths['/api/auth/login'].post").exists())
+                .andExpect(jsonPath("$.paths['/api/auth/login'].post.responses['200']").exists())
+                .andExpect(jsonPath("$.paths['/api/auth/login'].post.responses['401']").exists());
     }
 }

@@ -51,8 +51,8 @@ du volume. Si la base de test manque : `docker compose down -v` puis `docker com
 | test | tests automatiques | base `jajashop_test`, séparée de dev |
 | prod | production | variables d'environnement obligatoires, aucun secret dans le code |
 
-En profil `prod`, l'application refuse de démarrer si une variable `DB_HOST`,
-`DB_PORT`, `DB_NAME`, `DB_USER` ou `DB_PASSWORD` est absente.
+En profil `prod`, l'application refuse de démarrer si une variable `DB_HOST`, `DB_PORT`,
+`DB_NAME`, `DB_USER`, `DB_PASSWORD` ou `JWT_SECRET` est absente.
 
 Lancer avec un autre profil : `SPRING_PROFILES_ACTIVE=prod ./mvnw spring-boot:run`
 
@@ -181,3 +181,33 @@ Crée un compte avec le rôle **CLIENT** (le rôle ne peut pas être choisi par 
 
 Le mot de passe est haché avec BCrypt et n'apparaît jamais dans les réponses ni dans les logs.
 Réponses : `201` compte créé, `400` données invalides, `409` e-mail déjà utilisé.
+
+## Connexion (`POST /api/auth/login`)
+
+Vérifie l'e-mail et le mot de passe, puis retourne un token JWT.
+
+```json
+{
+  "accessToken": "eyJ...",
+  "tokenType": "Bearer",
+  "expiresIn": 3600,
+  "user": { "id": 1, "email": "awa@example.com", "role": "CLIENT" }
+}
+```
+
+- Le token se transmet ensuite dans l'en-tête `Authorization: Bearer <token>`.
+- Algorithme HS256, durée de vie 60 minutes (`app.jwt.expiration-minutes`).
+- Contenu du token : `sub` (identifiant), `email`, `role`, `iat`, `exp`. Il est signé, pas chiffré :
+  on n'y met aucune donnée sensible.
+- Réponses : `200` connexion réussie, `400` champs manquants, `401` identifiants invalides.
+  Le message 401 est identique que l'e-mail n'existe pas, que le mot de passe soit faux
+  ou que le compte soit désactivé.
+
+## Configuration JWT
+
+| Variable | Rôle |
+|---|---|
+| `JWT_SECRET` | secret de signature, 32 caractères minimum. Obligatoire (dev : dans `.env`, prod : variable d'environnement) |
+
+Générer un secret : `openssl rand -base64 48`. Le secret ne doit jamais être commité.
+En profil `test`, un secret fixe est défini dans `application-test.yml` (inutilisable en vrai).
