@@ -52,7 +52,7 @@ du volume. Si la base de test manque : `docker compose down -v` puis `docker com
 | prod | production | variables d'environnement obligatoires, aucun secret dans le code |
 
 En profil `prod`, l'application refuse de démarrer si une variable `DB_HOST`, `DB_PORT`,
-`DB_NAME`, `DB_USER`, `DB_PASSWORD` ou `JWT_SECRET` est absente.
+`DB_NAME`, `DB_USER`, `DB_PASSWORD`, `JWT_SECRET` ou `CORS_ALLOWED_ORIGINS` est absente.
 
 Lancer avec un autre profil : `SPRING_PROFILES_ACTIVE=prod ./mvnw spring-boot:run`
 
@@ -211,3 +211,28 @@ Vérifie l'e-mail et le mot de passe, puis retourne un token JWT.
 
 Générer un secret : `openssl rand -base64 48`. Le secret ne doit jamais être commité.
 En profil `test`, un secret fixe est défini dans `application-test.yml` (inutilisable en vrai).
+
+
+## Sécurité (Spring Security)
+
+API **stateless** : aucune session, authentification par token JWT dans l'en-tête
+`Authorization: Bearer <token>`. Tout ce qui n'est pas explicitement autorisé est interdit.
+
+| Routes | Accès |
+|---|---|
+| `GET /api/health`, `POST /api/auth/register`, `POST /api/auth/login` | public |
+| `GET /api/products/**`, `/api/categories/**`, `/api/public/**` | public (lecture seule) |
+| `/v3/api-docs/**`, `/swagger-ui/**` | public, uniquement là où Swagger est activé (dev, test) |
+| `/api/me/**` | tout utilisateur connecté |
+| `/api/cart/**`, `/api/orders/**` | rôle CLIENT |
+| `/api/admin/**` | rôle ADMIN |
+| toute autre route | utilisateur connecté |
+
+Réponses : `401` sans token valide ou avec un token invalide ou expiré, `403` avec un rôle
+insuffisant. Les deux au format JSON `ApiError`.
+
+CORS : seules les origines listées dans `CORS_ALLOWED_ORIGINS` (séparées par des virgules)
+peuvent appeler l'API depuis un navigateur. Par défaut en dev : `http://localhost:5173`.
+Le joker `*` est refusé au démarrage.
+
+Le jeton CSRF est désactivé : l'API n'utilise pas de cookie de session.
