@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 
 /**
    Gestion centrale des erreurs : toute exception d'un contrôleur
@@ -83,6 +85,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ResponseEntity<ApiError> handleUnsupportedMediaType(HttpMediaTypeNotSupportedException ex) {
         return build(ErrorCode.UNSUPPORTED_MEDIA_TYPE, "Type de contenu non supporté.", List.of());
+    }
+
+    /* Droits insuffisants, détectés dans le code d'un contrôleur (ex. @PreAuthorize plus tard). Statut 403. */
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiError> handleAccessDenied(AccessDeniedException ex) {
+        return build(ErrorCode.FORBIDDEN, "Accès refusé : droits insuffisants.", List.of());
+    }
+
+    /* Erreur d'authentification remontée depuis un contrôleur. Statut 401. */
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ApiError> handleAuthentication(AuthenticationException ex) {
+        return build(ErrorCode.UNAUTHORIZED, "Authentification requise.", List.of());
     }
 
     /*
