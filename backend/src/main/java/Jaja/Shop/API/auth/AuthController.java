@@ -45,4 +45,22 @@ public class AuthController {
         UserResponse created = authService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
+    @Operation(
+            summary = "Se connecter",
+            description = "Vérifie l'e-mail et le mot de passe, puis retourne un token JWT signé "
+                    + "avec une date d'expiration. Le token s'envoie ensuite dans l'en-tête "
+                    + "Authorization: Bearer <token>. Route publique.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Connexion réussie",
+                    content = @Content(schema = @Schema(implementation = LoginResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Champs manquants",
+                    content = @Content(schema = @Schema(implementation = ApiError.class))),
+            @ApiResponse(responseCode = "401", description = "Identifiants invalides",
+                    content = @Content(schema = @Schema(implementation = ApiError.class)))
+    })
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        return ResponseEntity.ok(authService.login(request));
+    }
+
 }
