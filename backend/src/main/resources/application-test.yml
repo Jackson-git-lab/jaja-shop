@@ -17,3 +17,7 @@ app:
   jwt:
     secret: cle-de-test-uniquement-0123456789-abcdefghij
     expiration-minutes: 15
+
+  admin:
+    email: ""
+    password: ""
