@@ -236,3 +236,24 @@ peuvent appeler l'API depuis un navigateur. Par défaut en dev : `http://localho
 Le joker `*` est refusé au démarrage.
 
 Le jeton CSRF est désactivé : l'API n'utilise pas de cookie de session.
+
+## Administrateur initial
+
+Au démarrage, si **aucun administrateur n'existe**, l'application en crée un à partir des
+variables d'environnement. Sans ces variables, rien n'est créé (un avertissement est affiché).
+
+| Variable | Rôle | Défaut |
+|---|---|---|
+| `ADMIN_EMAIL` | e-mail de connexion de l'administrateur | vide (aucune création) |
+| `ADMIN_PASSWORD` | mot de passe (8 à 64 caractères, une lettre et un chiffre au moins) | vide (aucune création) |
+| `ADMIN_FIRST_NAME`, `ADMIN_LAST_NAME`, `ADMIN_PHONE` | informations du profil | `Admin`, `Jaja Shop`, `+225 00 00 00 00` |
+
+Règles :
+- le mot de passe suit les mêmes règles que l'inscription ; il est haché (BCrypt) et jamais écrit dans les logs ;
+- un compte existant n'est **jamais** promu administrateur : si `ADMIN_EMAIL` correspond à un compte CLIENT,
+  l'application refuse de démarrer (sinon, un inscrit pourrait devenir administrateur) ;
+- relancer l'application ne crée pas de second administrateur ;
+- **après le premier démarrage, retirer `ADMIN_PASSWORD` de l'environnement** et changer le mot de passe
+  depuis l'application dès que la route de changement de mot de passe sera disponible.
+
+En local, ajouter ces deux variables au fichier `.env`.
