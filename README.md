@@ -257,3 +257,23 @@ Règles :
   depuis l'application dès que la route de changement de mot de passe sera disponible.
 
 En local, ajouter ces deux variables au fichier `.env`.
+
+
+## Profil (`/api/me`)
+
+Routes réservées à l'utilisateur connecté (client ou administrateur). L'identité vient du token,
+jamais de l'URL : on ne peut consulter et modifier que son propre compte.
+
+| Route | Rôle | Réponses |
+|---|---|---|
+| `GET /api/me` | consulter mon profil | `200`, `401` |
+| `PUT /api/me` | modifier prénom, nom, téléphone (l'e-mail et le rôle sont ignorés) | `200`, `400`, `401` |
+| `PUT /api/me/password` | changer mon mot de passe (`currentPassword`, `newPassword`) | `204`, `400`, `401` |
+
+Changement de mot de passe : l'ancien est exigé ; le nouveau suit les règles de l'inscription et doit
+différer de l'actuel. Un mauvais mot de passe actuel renvoie `400` avec le code `INVALID_CURRENT_PASSWORD`
+(et non `401`, qui signifie « token invalide »).
+
+Ces routes relisent la base à chaque appel : un compte supprimé ou désactivé est refusé (`401`),
+même avec un token encore valide. Les tokens déjà émis restent valides après un changement de mot de passe
+(limite connue de l'approche stateless).
