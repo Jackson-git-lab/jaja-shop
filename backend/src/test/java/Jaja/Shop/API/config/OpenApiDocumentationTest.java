@@ -64,4 +64,14 @@ class OpenApiDocumentationTest {
                 .andExpect(jsonPath("$.paths['/api/auth/login'].post.responses['200']").exists())
                 .andExpect(jsonPath("$.paths['/api/auth/login'].post.responses['401']").exists());
     }
+
+        @Test
+    void leProfilEstDocumenteEtProtegeParLeSchemaJwt() throws Exception {
+        mockMvc.perform(get("/v3/api-docs"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.paths['/api/me'].get").exists())
+                .andExpect(jsonPath("$.paths['/api/me'].put").exists())
+                .andExpect(jsonPath("$.paths['/api/me/password'].put").exists())
+                .andExpect(jsonPath("$.paths['/api/me'].get.security[0].bearerAuth").exists());
+    }
 }
