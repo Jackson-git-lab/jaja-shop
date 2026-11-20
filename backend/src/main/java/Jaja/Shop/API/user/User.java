@@ -65,6 +65,18 @@ public class User {
         this.role = role;
     }
 
+    /* on met à jour les informations modifiables du profil. L'e-mail et le rôle ne changent jamais ici : pas de setter pour eux.*/
+    public void updateProfile(String firstName, String lastName, String phone) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+    }
+
+    /* on remplace le hash du mot de passe. on reçoit toujours un hash BCrypt, jamais un mot de passe en clair. */
+    public void changePasswordHash(String newPasswordHash) {
+        this.passwordHash = newPasswordHash;
+    }
+
     public Long getId() {
         return id;
     }
