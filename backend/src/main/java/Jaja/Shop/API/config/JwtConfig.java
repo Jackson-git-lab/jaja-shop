@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import Jaja.Shop.API.security.JwtProperties;
+import Jaja.Shop.API.security.RefreshTokenProperties;
 
 /*
   on active la lecture des réglages JWT et fournit l'horloge de l'application.
@@ -14,7 +15,7 @@ import Jaja.Shop.API.security.JwtProperties;
    (indispensable pour tester l'expiration d'un token sans attendre).
  */
 @Configuration
-@EnableConfigurationProperties(JwtProperties.class)
+@EnableConfigurationProperties({JwtProperties.class, RefreshTokenProperties.class})
 public class JwtConfig {
 
     @Bean
