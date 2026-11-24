@@ -277,3 +277,26 @@ différer de l'actuel. Un mauvais mot de passe actuel renvoie `400` avec le code
 Ces routes relisent la base à chaque appel : un compte supprimé ou désactivé est refusé (`401`),
 même avec un token encore valide. Les tokens déjà émis restent valides après un changement de mot de passe
 (limite connue de l'approche stateless).
+
+## Adresses de livraison (`/api/me/addresses`)
+
+Carnet d'adresses de l'utilisateur connecté. Le propriétaire est toujours celui du token.
+
+| Route | Rôle | Réponses |
+|---|---|---|
+| `GET /api/me/addresses` | lister mes adresses (adresse par défaut en premier) | `200`, `401` |
+| `GET /api/me/addresses/{id}` | consulter une de mes adresses | `200`, `401`, `404` |
+| `POST /api/me/addresses` | ajouter une adresse | `201` (+ `Location`), `400`, `401`, `409` |
+| `PUT /api/me/addresses/{id}` | modifier une adresse | `200`, `400`, `401`, `404` |
+| `DELETE /api/me/addresses/{id}` | supprimer une adresse | `204`, `401`, `404` |
+
+Règles :
+- champs : `label`, `city`, `district`, `details`, `phone` (obligatoires), `defaultAddress` (facultatif) ;
+- la première adresse est automatiquement l'adresse par défaut ;
+- `defaultAddress: true` fait de l'adresse l'adresse par défaut (l'ancienne perd ce statut) ;
+  `false` ou absent ne retire jamais le statut de l'adresse par défaut actuelle ;
+- supprimer l'adresse par défaut promeut la plus récente des adresses restantes ;
+- au plus **une adresse par défaut par utilisateur**, garantie par un index unique partiel en base ;
+- maximum 10 adresses par utilisateur (`409` au-delà) ;
+- l'adresse d'un autre utilisateur est indistinguable d'une adresse inexistante : `404` ;
+- supprimer un compte supprime ses adresses.
